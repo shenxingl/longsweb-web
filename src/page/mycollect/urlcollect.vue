@@ -14,7 +14,7 @@
         </el-select>
       </el-form-item>
       <el-button @click="getUrlList">查询</el-button>
-      <el-button type="primary" @click="">新增</el-button>
+      <el-button type="primary" @click="showDialog = true">新增</el-button>
     </el-form>
     <div class="data-line data-line-title">
       <div>URL地址</div>
@@ -27,7 +27,7 @@
           <a :href="item.uf202" target="_blank">{{item.uf202}}</a>
         </div>
         <div>
-          <span>{{item.uf203}}</span>
+          <span>{{item.uf203 || '暂无'}}</span>
         </div>
         <div>
           <el-button type="text" size="medium" @click="beInvalid(item.uf201)">作废</el-button>
@@ -35,6 +35,32 @@
       </div>
       <div v-if="dataList.length === 0" style="margin-top: 20px;color: #999999">暂无数据</div>
     </div>
+    <!-- 新增url部分 --------------------------------------------------------------------------------------->
+    <el-dialog title="URL新增" :visible.sync="showDialog" :modal-append-to-body='false' :before-close='dialogClose' width="45%">
+      <div v-loading="diaLoading">
+        <el-form :model="urlNewForm">
+          <el-form-item label="URL类型" label-width="12%">
+            <el-select v-model="urlNewForm.uf101" placeholder="请选择URL类型" style="width: 150px">
+              <el-option v-for="item in uf101Options"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="URL地址" label-width="12%">
+            <el-input v-model="urlNewForm.uf202" placeholder="请输入URL地址" clearable autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="备注" label-width="12%">
+            <el-input v-model="urlNewForm.uf203" placeholder="请输入必要说明" clearable autocomplete="off" @keyup.enter.native="urlAdd"></el-input>
+          </el-form-item>
+        </el-form>
+        <div class="dialog-footer">
+          <el-button @click="dialogClose">取 消</el-button>
+          <el-button type="primary" @click="urlAdd">确 定</el-button>
+        </div>
+      </div>
+    </el-dialog>
     <!--    <el-pagination style="float: right"-->
     <!--                   v-if="paginationShow"-->
     <!--                   @size-change="sizeChangeHandle"-->
@@ -59,14 +85,24 @@ export default {
         uf203: '',
         uf101: ''
       },
+      urlNewForm: {
+        uf101: '',
+        uf202: '',
+        uf203: ''
+      },
       uf101Options: [
         {value: '', label: '全部'},
         {value: '1', label: '分类1'},
         {value: '2', label: '分类2'}
       ],
       dataList: [],
-      dataListLoading: false
+      dataListLoading: false,
+      diaLoading: false,
+      showDialog: false
     }
+  },
+  created() {
+    this.getUrlList()
   },
   methods: {
     getUrlList() {
@@ -85,6 +121,41 @@ export default {
       })
     },
     beInvalid(val) {
+    },
+    urlAdd() {
+      let uf101,uf202
+      if (this.urlNewForm.uf101 === '') {
+        uf101 = '999999'
+      } else {
+        uf101 = this.urlNewForm.uf101
+      }
+      if (!this.urlNewForm.uf202) {
+        this.$message.warning('请输入URL地址')
+        return
+      } else {
+        uf202 = this.urlNewForm.uf202.trim()
+      }
+      axios.post('/api/urlctrl/addUrl?uf101=' + uf101 + '&uf202=' + uf202 + '&uf203=' + this.urlNewForm.uf203).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success('新增成功！')
+          this.dialogClose()
+          this.getUrlList()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      }).catch(() => {
+        this.$message.error('服务异常')
+      }).finally(() => {
+        this.dataListLoading = false
+      })
+    },
+    dialogClose() {
+      this.urlNewForm = {
+        uf101: '',
+        uf202: '',
+        uf203: ''
+      }
+      this.showDialog = false
     }
   }
 }
@@ -132,5 +203,15 @@ export default {
   overflow: auto;
   font-size: 14px;
   text-align: center
+}
+
+.dialog-footer {
+  text-align: right;
+  margin-top: 25px;
+}
+
+/deep/ .el-dialog {
+  border-radius: 10px;
+  background-color: #f3f3f3;
 }
 </style>
