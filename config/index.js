@@ -21,7 +21,7 @@ module.exports = {
   build: {
     env: {
       NODE_ENV: '"production"',
-      BASE_URL: '"./longs"'
+      BASE_URL: '""'
     },
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),

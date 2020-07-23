@@ -30,7 +30,7 @@
           <span>{{item.uf203 || '暂无'}}</span>
         </div>
         <div>
-          <el-button type="text" size="medium" @click="beInvalid(item.uf201)">作废</el-button>
+          <el-button type="text" size="medium" @click="beInvalid(item)">作废</el-button>
         </div>
       </div>
       <div v-if="dataList.length === 0" style="margin-top: 20px;color: #999999">暂无数据</div>
@@ -108,7 +108,7 @@ export default {
     getUrlList() {
       this.dataList = []
       this.dataListLoading = true
-      axios.get('/api/urlctrl/getUrlList?uf203=' + this.dataForm.uf203 + '&uf101=' + this.dataForm.uf101).then((res) => {
+      axios.get('/urlctrl/getUrlList?uf203=' + this.dataForm.uf203 + '&uf101=' + this.dataForm.uf101).then((res) => {
         if (res.data.code === 0) {
           this.dataList = res.data.urlList.content
         } else {
@@ -121,6 +121,22 @@ export default {
       })
     },
     beInvalid(val) {
+      this.$confirm('确定[' + val.uf203 + ']作废吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        axios.post('/urlctrl/delUrl?uf201=' + val.uf201).then((res) => {
+          if (res.data.code === 0) {
+            this.$message.success('作废成功！')
+            this.getUrlList()
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        }).catch(() => {
+          this.$message.error('服务异常')
+        })
+      })
     },
     urlAdd() {
       let uf101,uf202
@@ -135,7 +151,7 @@ export default {
       } else {
         uf202 = this.urlNewForm.uf202.trim()
       }
-      axios.post('/api/urlctrl/addUrl?uf101=' + uf101 + '&uf202=' + uf202 + '&uf203=' + this.urlNewForm.uf203).then((res) => {
+      axios.post('/urlctrl/addUrl?uf101=' + uf101 + '&uf202=' + uf202 + '&uf203=' + this.urlNewForm.uf203).then((res) => {
         if (res.data.code === 0) {
           this.$message.success('新增成功！')
           this.dialogClose()
