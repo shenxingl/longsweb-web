@@ -23,11 +23,17 @@ export default {
       let formData = new FormData()
       formData.append('file', this.file)
       axios.post('/filectrl/upload', formData).then((res) => {
-        let fileInfo = res.data.fileInfo
-        this.$confirm('上传成功。上传图片：' + fileInfo.fileName + '。存储路径：' + fileInfo.filePath, '提示', {
-          confirmButtonText: '确定'
-        })
-      }).catch()
+        if (res.data.code === 0) {
+          let fileInfo = res.data.fileInfo
+          this.$confirm('上传成功。上传图片：' + fileInfo.fileName + '。存储路径：' + fileInfo.filePath, '提示', {
+            confirmButtonText: '确定'
+          })
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      }).catch(() => {
+        this.$message.error('服务异常')
+      })
     },
   }
 }
