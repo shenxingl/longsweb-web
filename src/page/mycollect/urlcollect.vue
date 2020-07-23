@@ -121,7 +121,7 @@ export default {
       })
     },
     beInvalid(val) {
-      this.$confirm('确定[' + val.uf203 + ']作废吗?', '提示', {
+      this.$confirm('确定作废[' + val.uf203 + ']吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
