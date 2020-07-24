@@ -1,7 +1,7 @@
 <template>
   <div style="width: calc(100% - 30px);height: calc(100% - 30px);border: 0;padding: 15px"
        v-loading="loading"
-       :element-loading-text="loadingText"
+       element-loading-text="正在查询文件列表，请稍后..."
        element-loading-spinner="el-icon-loading"
        element-loading-background="rgba(0, 0, 0, 0.5)">
 
@@ -30,7 +30,7 @@
            @change="fileChange($event)">
     </input>
 
-    <el-dialog title="文件上传中..."
+    <el-dialog :title="loadTitle"
                :visible.sync="showDialog"
                :show-close="false"
                :close-on-click-modal="false"
@@ -55,12 +55,12 @@ export default {
       },
       fileList: [],
       loading: false,
-      loadingText: '',
       showDialog: false,
+      loadTitle: '',
       loaded: '0'           // 下载进度
     }
   },
-  created(){
+  created() {
     this.getFileList()
   },
   methods: {
@@ -68,7 +68,6 @@ export default {
      * 查询文件列表
      */
     getFileList() {
-      this.loadingText = '正在查询文件列表，请稍后...'
       this.loading = true
       axios.get('/filectrl/getFileList?fl103=' + this.fileForm.fl103).then((res) => {
         if (res.data.code === 0) {
@@ -110,16 +109,20 @@ export default {
      * 上传文件
      */
     doUpload() {
+      let self = this
       let formData = new FormData()
       formData.append('file', this.file)
 
+      this.loadTitle = '文件上传中...'
       this.showDialog = true
       axios({
         method: 'post',
         url: '/filectrl/upload',
         onUploadProgress(e) {
-          this.loaded = Number((e.loaded / e.total * 100).toFixed(1))
-          console.log('eeeeeeee'+ this.loaded)
+          self.loaded = Number((e.loaded / e.total * 100).toFixed(1))
+          if (e.loaded === e.total) {
+            self.loadTitle = '正在保存文件，请稍后...'
+          }
         },
         data: formData
       }).then((res) => {
@@ -135,8 +138,8 @@ export default {
       }).finally(() => {
         this.cleanData()
         this.showDialog = false
+        this.loadTitle = ''
         this.loaded = '0'
-        console.log('ddddddd'+ this.loaded)
       })
     },
 
