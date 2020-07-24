@@ -1,5 +1,9 @@
 <template>
-  <div style="width: calc(100% - 30px);height: calc(100% - 30px);border: 0;padding: 15px">
+  <div style="width: calc(100% - 30px);height: calc(100% - 30px);border: 0;padding: 15px"
+       v-loading="loading"
+       :element-loading-text="loadingText"
+       element-loading-spinner="el-icon-loading"
+       element-loading-background="rgba(0, 0, 0, 0.5)">
 
     <!-- 查询条件 -->
     <el-form :inline="true" :model="fileForm" style="height: 52px;overflow: auto">
@@ -40,7 +44,8 @@ export default {
         fl103: ''
       },
       fileList: [],
-      dataListLoading: false
+      loading: false,
+      loadingText: ''
     }
   },
   created(){
@@ -51,6 +56,8 @@ export default {
      * 查询文件列表
      */
     getFileList() {
+      this.loadingText = '正在查询文件列表，请稍后...'
+      this.loading = true
       axios.get('/filectrl/getFileList?fl103=' + this.fileForm.fl103).then((res) => {
         if (res.data.code === 0) {
           this.fileList = []
@@ -60,6 +67,8 @@ export default {
         }
       }).catch(() => {
         this.$message.error('服务异常')
+      }).finally(() => {
+        this.loading = false
       })
     },
 
@@ -91,6 +100,9 @@ export default {
     doUpload() {
       let formData = new FormData()
       formData.append('file', this.file)
+
+      this.loadingText = '正在上传，请稍后...'
+      this.loading = true
       axios.post('/filectrl/upload', formData).then((res) => {
         if (res.data.code === 0) {
           let fileInfo = res.data.fileInfo
@@ -105,6 +117,8 @@ export default {
         }
       }).catch(() => {
         this.$message.error('服务异常')
+      }).finally(() => {
+        this.loading = false
       })
     },
 
