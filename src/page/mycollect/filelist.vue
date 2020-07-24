@@ -15,7 +15,7 @@
     </el-form>
 
     <!-- 文件列表 -->
-    <el-table :data="fileList" v-loading="dataListLoading" border height="calc(100% - 55px)">
+    <el-table :data="fileList" border height="calc(100% - 55px)">
       <el-table-column prop="fl103" align="center" min-width="180" label="文件名"></el-table-column>
       <el-table-column prop="fl105" align="center" min-width="230" label="存储位置"></el-table-column>
       <el-table-column prop="fl106" align="center" min-width="60" label="下载次数"></el-table-column>
@@ -29,6 +29,16 @@
            type="file"
            @change="fileChange($event)">
     </input>
+
+    <el-dialog title="文件上传中..."
+               :visible.sync="showDialog"
+               :show-close="false"
+               :close-on-click-modal="false"
+               :modal-append-to-body="false"
+               :close-on-press-escape="false"
+               width="45%" top="15%">
+      <el-progress :text-inside="true" :stroke-width="26" :percentage="loaded"></el-progress>
+    </el-dialog>
   </div>
 </template>
 
@@ -45,7 +55,9 @@ export default {
       },
       fileList: [],
       loading: false,
-      loadingText: ''
+      loadingText: '',
+      showDialog: false,
+      loaded: '0'           // 下载进度
     }
   },
   created(){
@@ -101,16 +113,19 @@ export default {
       let formData = new FormData()
       formData.append('file', this.file)
 
-      this.loadingText = '正在上传，请稍后...'
-      this.loading = true
-      axios.post('/filectrl/upload', formData).then((res) => {
+      this.showDialog = true
+      axios({
+        method: 'post',
+        url: '/filectrl/upload',
+        onUploadProgress(e) {
+          this.loaded = Number((e.loaded / e.total * 100).toFixed(1))
+          console.log('eeeeeeee'+ this.loaded)
+        },
+        data: formData
+      }).then((res) => {
         if (res.data.code === 0) {
           let fileInfo = res.data.fileInfo
-          this.$confirm('上传成功。上传图片：' + fileInfo.fileName + '。存储路径：' + fileInfo.filePath, '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-          })
-          this.cleanData()
+          this.$message.success('上传成功，文件位置：' + fileInfo.filePath)
           this.getFileList()
         } else {
           this.$message.error(res.data.msg)
@@ -118,7 +133,10 @@ export default {
       }).catch(() => {
         this.$message.error('服务异常')
       }).finally(() => {
-        this.loading = false
+        this.cleanData()
+        this.showDialog = false
+        this.loaded = '0'
+        console.log('ddddddd'+ this.loaded)
       })
     },
 
@@ -134,5 +152,7 @@ export default {
 </script>
 
 <style scoped>
-
+/deep/ .el-dialog {
+  border-radius: 10px;
+}
 </style>
