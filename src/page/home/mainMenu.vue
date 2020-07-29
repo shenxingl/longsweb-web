@@ -28,6 +28,8 @@
                 </template>
                 <el-menu-item index="urlcollect">网址收藏</el-menu-item>
                 <el-menu-item index="filelist">文件列表</el-menu-item>
+                <el-menu-item index="mymusic">我的音乐</el-menu-item>
+                <el-menu-item index="movielist">影视</el-menu-item>
               </el-submenu>
               <el-menu-item>
                 <i class="el-icon-user" style="color: white"></i>
