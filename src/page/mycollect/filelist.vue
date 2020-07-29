@@ -22,7 +22,8 @@
       <el-table-column prop="fl107" align="center" min-width="130" label="上传时间"></el-table-column>
       <el-table-column fixed="right" align="center" width="140" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="downloadFile(scope.row)">下载</el-button>
+          <a :href="downBaseUrl + scope.row.fl101" :download="scope.row.fl103">下载</a>
+<!--          <el-button type="text" size="small" @click="downloadFile(scope.row)">下载</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -54,6 +55,7 @@ export default {
   name: 'filelist',
   data() {
     return {
+      downBaseUrl: '/longs/filectrl/downloadFile?fl101=',
       file: '',
       fileForm: {
         fl103: ''
@@ -83,11 +85,12 @@ export default {
         } else {
           this.$message.error(res.data.msg)
         }
-      }).catch(() => {
-        this.$message.error('服务异常')
-      }).finally(() => {
         this.loading = false
         this.loadText = ''
+      }).catch(() => {
+        this.loading = false
+        this.loadText = ''
+        this.$message.error('服务异常')
       })
     },
 
@@ -141,48 +144,49 @@ export default {
         } else {
           this.$message.error(res.data.msg)
         }
-      }).catch(() => {
-        this.$message.error('服务异常')
-      }).finally(() => {
         this.cleanData()
         this.showDialog = false
         this.loadTitle = ''
         this.loaded = 0
+      }).catch(() => {
+        this.cleanData()
+        this.showDialog = false
+        this.loadTitle = ''
+        this.loaded = 0
+        this.$message.error('服务异常')
       })
     },
 
-    /**
-     * 下载文件
-     */
-    downloadFile(val) {
-      this.$confirm('下载文件：[' + val.fl103 + ']', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-      }).then(() => {
-        this.loadText = '正在获取文件，请稍后...'
-        this.loading = true
-        axios.get('/filectrl/downloadFile?fl101=' + val.fl101, {responseType: 'blob'}).then((res) => {
-          let data = res.data;
-          if (!data) {
-            return;
-          }
-          const blob = new Blob([data])
-          let url = window.URL.createObjectURL(blob);
-          let link = document.createElement('a');
-          link.style.display = 'none';
-          link.href = url;
-          link.setAttribute('download', val.fl103);
-          document.body.appendChild(link);
-          link.click()
-          this.getFileList()
-        }).catch(() => {
-          this.$message.error('服务异常')
-        }).finally(() => {
-          this.loading = false
-          this.loadText = ''
-        })
-      })
-    },
+    // /**
+    //  * 下载文件
+    //  */
+    // downloadFile(val) {
+    //   this.$confirm('下载文件：[' + val.fl103 + ']', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //   }).then(() => {
+    //     this.loadText = '正在获取文件，请稍后...'
+    //     this.loading = true
+    //     axios.get('/filectrl/downloadFile?fl101=' + val.fl101).then((res) => {
+    //       let data = res.data;
+    //       if (!data) {
+    //         return;
+    //       }
+    //       let link = document.createElement('a');
+    //       link.style.display = 'none';
+    //       link.href = '/longs/filectrl/downloadFile?fl101=' + val.fl101;
+    //       document.body.appendChild(link);
+    //       link.click()
+    //       this.getFileList()
+    //       this.loading = false
+    //       this.loadText = ''
+    //     }).catch(() => {
+    //       this.loading = false
+    //       this.loadText = ''
+    //       this.$message.error('服务异常')
+    //     })
+    //   })
+    // },
 
     /**
      * 清空
@@ -198,5 +202,10 @@ export default {
 <style scoped>
 /deep/ .el-dialog {
   border-radius: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: blue;
 }
 </style>
