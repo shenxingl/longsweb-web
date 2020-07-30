@@ -22,8 +22,7 @@
       <el-table-column prop="fl107" align="center" min-width="130" label="上传时间"></el-table-column>
       <el-table-column fixed="right" align="center" width="140" label="操作">
         <template slot-scope="scope">
-          <a :href="downBaseUrl + scope.row.fl101" :download="scope.row.fl103">下载</a>
-<!--          <el-button type="text" size="small" @click="downloadFile(scope.row)">下载</el-button>-->
+          <a :href="downBaseUrl + scope.row.fl101">下载</a>
         </template>
       </el-table-column>
     </el-table>
