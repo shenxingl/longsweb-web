@@ -75,7 +75,6 @@ export default {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: linear-gradient(#91d197, #f5f5f5);
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {

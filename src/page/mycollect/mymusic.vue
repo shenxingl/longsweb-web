@@ -1,6 +1,6 @@
 <template>
   <div style="width: calc(100% - 30px);height: calc(100% - 30px);border: 0;padding: 15px">
-    <audio controls id="myaudio" src="../../../static/test/2.mp3"></audio>
+    <audio controls id="myaudio" src="/longs/videoctrl/videoplayer?vd101=1"></audio>
     <canvas id="canvas"></canvas>
     <el-button @click="play">播放</el-button>
   </div>

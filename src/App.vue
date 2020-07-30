@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{'back1':back===1,'back2':back===2, 'back3': back===3}">
     <router-view/>
   </div>
 </template>
@@ -7,7 +7,38 @@
 <script>
 export default {
   name: 'App',
-
+  data(){
+    return{
+      backList: [
+        'assets/comm/back1.jpg',
+        'assets/comm/back2.jpg',
+        'assets/comm/back3.jpg'
+      ],
+      back: 1
+    }
+  },
+  created() {
+    setTimeout(() => {
+      window.L2Dwidget.init({
+        pluginRootPath: 'static/live2dw/',
+        pluginJsPath: 'lib/',
+        pluginModelPath: 'live2d-widget-model-z16/assets/',
+        tagMode: false,
+        debug: false,
+        model: { jsonPath: '/static/live2dw/live2d-widget-model-z16/assets/z16.model.json' },
+        display: { position: 'right', width: 240, height: 420 },
+        mobile: { show: true },
+        log: false
+      })
+    }, 1000)
+    setInterval(() => {
+      if (this.back<3){
+        this.back++
+      } else {
+        this.back=1
+      }
+    }, 30000)
+  },
 }
 </script>
 
@@ -15,8 +46,22 @@ export default {
 #app {
   width: 100%;
   height: 100%;
+  background-size: 100% 100%;
+  transition: background 1s;
+  /*cursor: url("./src/assets/icon/miaozhun.png")*/
 }
 
+.back1 {
+  background:url('assets/comm/back1.jpg');
+}
+
+.back2 {
+  background:url('assets/comm/back2.jpg');
+}
+
+.back3 {
+  background:url('assets/comm/back3.jpg');
+}
 
 div::-webkit-scrollbar {
   /*滚动条整体样式*/
