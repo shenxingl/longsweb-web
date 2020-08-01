@@ -24,7 +24,7 @@ let router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.name === 'componentList' || to.name === 'ceshi1') {
+  if (to.name === 'componentList' || to.name === 'ceshi1' || to.name === 'mainMenu') {
     store.commit('updateIsShowMenu', false)
     next()
   } else {

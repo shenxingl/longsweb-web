@@ -11,7 +11,7 @@
               <p>当前登录：long</p>
             </div>
             <el-dropdown-menu slot="dropdown" style="width: 100px;">
-              <el-dropdown-item>退出</el-dropdown-item>
+              <el-dropdown-item @click.native="$router.replace('/')">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>

@@ -29,7 +29,6 @@ export default {
      * 主菜单
      */
     toMainMenu() {
-      this.showMenu = false
       this.$router.push('mainMenu')
     }
   }

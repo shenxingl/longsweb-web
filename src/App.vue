@@ -37,13 +37,13 @@ export default {
         log: false
       })
     }, 1000)
-    setInterval(() => {
-      if (this.back < 3) {
-        this.back++
-      } else {
-        this.back = 1
-      }
-    }, 30000)
+    // setInterval(() => {
+    //   if (this.back < 3) {
+    //     this.back++
+    //   } else {
+    //     this.back = 1
+    //   }
+    // }, 30000)
   },
   methods: {
     appClick() {
