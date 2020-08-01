@@ -1,8 +1,10 @@
 <template>
-<!--  <div id="app" :class="{'back1':back===1,'back2':back===2, 'back3': back===3}" @click="appClick()">-->
-  <div id="app" @click="appClick()">
+  <div id="app" v-if="isPhone" :class="{'back1':back===1,'back2':back===2, 'back3': back===3}" @click="appClick()">
     <router-view/>
-    <video class="app_video" src="./assets/comm/vm1.mp4" autoplay muted loop></video>
+  </div>
+  <div v-else @click="appClick()">
+    <router-view/>
+    <video v-if="!isPhone" class="app_video" src="./assets/comm/vm1.mp4" autoplay muted loop></video>
   </div>
 </template>
 
@@ -16,6 +18,7 @@ export default {
         'assets/comm/back2.jpg',
         'assets/comm/back3.jpg'
       ],
+      isPhone: false,
       back: 1,
       textList: ["❤富强❤", "❤民主❤", "❤文明❤", "❤和谐❤", "❤自由❤", "❤平等❤", "❤公正❤", "❤法治❤",
           "❤爱国❤", "❤敬业❤", "❤诚信❤", "❤友善❤"],
@@ -24,6 +27,7 @@ export default {
     }
   },
   created() {
+    // 看板娘-------------------------------------------------------------------------------------------------
     setTimeout(() => {
       window.L2Dwidget.init({
         pluginRootPath: 'static/live2dw/',
@@ -37,13 +41,18 @@ export default {
         log: false
       })
     }, 1000)
-    // setInterval(() => {
-    //   if (this.back < 3) {
-    //     this.back++
-    //   } else {
-    //     this.back = 1
-    //   }
-    // }, 30000)
+
+    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+      this.isPhone = true
+      // 轮播图--------------------------------------------------------------------------------------------------
+      setInterval(() => {
+        if (this.back < 3) {
+          this.back++
+        } else {
+          this.back = 1
+        }
+      }, 10000)
+    }
   },
   methods: {
     appClick() {
@@ -97,20 +106,20 @@ body {
 #app {
   width: 100%;
   height: 100%;
-  background-size: 100% 100%;
-  transition: background 1s;
+  background-size: 100% auto;
+  transition: background 5s;
 }
 
 .back1 {
-  background: url('assets/comm/back1.jpg');
+  background: url('assets/comm/sbz1.png') no-repeat;
 }
 
 .back2 {
-  background: url('assets/comm/back2.jpg');
+  background: url('assets/comm/sbz2.jpeg') no-repeat;
 }
 
 .back3 {
-  background: url('assets/comm/back3.jpg');
+  background: url('assets/comm/sbz3.jpeg') no-repeat;
 }
 
 .app_video{
