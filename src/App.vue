@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-if="isPhone" :class="{'back1':back===1,'back2':back===2, 'back3': back===3}" @click="appClick()">
+  <div id="app" v-if="isPhone" :class="{'back1':back===1,'back2':back===2, 'back3': back===3, 'back4': back===4, 'back5': back===5}" @click="appClick()">
     <router-view/>
   </div>
   <div v-else @click="appClick()">
@@ -46,7 +46,7 @@ export default {
       this.isPhone = true
       // 轮播图--------------------------------------------------------------------------------------------------
       setInterval(() => {
-        if (this.back < 3) {
+        if (this.back < 5) {
           this.back++
         } else {
           this.back = 1
@@ -106,7 +106,7 @@ body {
 #app {
   width: 100%;
   height: 100%;
-  background-size: 100% auto;
+  background-size: 100% 100%;
   transition: background 5s;
 }
 
@@ -120,6 +120,14 @@ body {
 
 .back3 {
   background: url('assets/comm/sbz3.jpeg') no-repeat;
+}
+
+.back4 {
+  background: url('assets/comm/sbz4.jpeg') no-repeat;
+}
+
+.back5 {
+  background: url('assets/comm/sbz5.jpeg') no-repeat;
 }
 
 .app_video{
