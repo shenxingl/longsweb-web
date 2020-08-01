@@ -1,6 +1,8 @@
 <template>
-  <div id="app" :class="{'back1':back===1,'back2':back===2, 'back3': back===3}" @click="appClick()">
+<!--  <div id="app" :class="{'back1':back===1,'back2':back===2, 'back3': back===3}" @click="appClick()">-->
+  <div id="app" @click="appClick()">
     <router-view/>
+    <video class="app_video" src="./assets/comm/vm1.mp4" autoplay muted loop></video>
   </div>
 </template>
 
@@ -109,6 +111,18 @@ body {
 
 .back3 {
   background: url('assets/comm/back3.jpg');
+}
+
+.app_video{
+  margin: 0;
+  width: 100vw;
+  height: auto;
+  position: fixed;
+  left:0;
+  top: -5%;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -9999;
 }
 
 div::-webkit-scrollbar {
